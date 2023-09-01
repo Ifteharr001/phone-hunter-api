@@ -1,22 +1,27 @@
-const loadPhone = async (searchText) => {
+const loadPhone = async (searchText, isShowAll) => {
   const res = await fetch(
     `https://openapi.programming-hero.com/api/phones?search=${searchText}`
   );
   const data = await res.json();
   const phones = data.data;
-  displyPhones(phones);
+  displyPhones(phones, isShowAll);
 };
 
-const displyPhones = (phones) => {
+const displyPhones = (phones, isShowAll) => {
+    
+
     const showAllContiner = document.getElementById("show-all-container");
-    if(phones.length > 12){
+    if(phones.length > 12 && !isShowAll){
         showAllContiner.classList.remove("hidden");
     } else{
         showAllContiner.classList.add('hidden')
     }
+    
     const phoneContainer = document.getElementById("phone-container");
-    phoneContainer.textContent = '';
-    phones = phones.slice(0, 12);
+    phoneContainer.textContent = "";
+    if(!isShowAll){
+        phones = phones.slice(0, 12);
+    }
 
   phones.forEach((phone) => {
     const phoneCard = document.createElement("div");
@@ -31,8 +36,8 @@ const displyPhones = (phones) => {
             <div class="card-body">
               <h2 class="card-title">${phone.phone_name}</h2>
               <p>If a dog chews shoes whose shoes does he choose?</p>
-              <div class="card-actions justify-end">
-                <button class="btn btn-primary">Buy Now</button>
+              <div class="card-actions justify-center">
+                <button class="btn btn-primary">Show Ditails</button>
               </div>
             </div>
         `;
@@ -41,11 +46,11 @@ const displyPhones = (phones) => {
   toggleLoadingSpinner(false)
 };
 // handle search button
-const handleSearch = () =>{
+const handleSearch = (isShowAll) =>{
     toggleLoadingSpinner(true);
     const searchFiled = document.getElementById('search-filed');
     const searchText = searchFiled.value;
-    loadPhone(searchText);
+    loadPhone(searchText, isShowAll);
 }
 
 const toggleLoadingSpinner = (isLoading) =>{
@@ -56,4 +61,8 @@ const toggleLoadingSpinner = (isLoading) =>{
     else{
         loadingSpinner.classList.add('hidden')
     }
+}
+
+const showAllhandaler = () =>{
+    handleSearch(true)
 }
