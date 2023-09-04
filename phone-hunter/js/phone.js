@@ -1,4 +1,4 @@
-const loadPhone = async (searchText, isShowAll) => {
+const loadPhone = async (searchText='samsung', isShowAll) => {
   const res = await fetch(
     `https://openapi.programming-hero.com/api/phones?search=${searchText}`
   );
@@ -37,7 +37,7 @@ const displyPhones = (phones, isShowAll) => {
               <h2 class="card-title">${phone.phone_name}</h2>
               <p>If a dog chews shoes whose shoes does he choose?</p>
               <div class="card-actions justify-center">
-                <button class="btn btn-primary">Show Ditails</button>
+                <button onclick="handleShowDetails('${phone.slug}')" class="btn btn-primary">Show Ditails</button>
               </div>
             </div>
         `;
@@ -66,3 +66,29 @@ const toggleLoadingSpinner = (isLoading) =>{
 const showAllhandaler = () =>{
     handleSearch(true)
 }
+
+const handleShowDetails = async (id) =>{
+    // console.log('clicked show details', id);
+    const res = await fetch(
+      `https://openapi.programming-hero.com/api/phone/${id}`
+    );
+    const data = await res.json();
+    const phone = data.data;
+    showPhoneDetails(phone);
+}
+
+const showPhoneDetails = (phone) =>{
+    console.log(phone);
+    const phoneName = document.getElementById("phone-name");
+    phoneName.innerText = phone.name;
+    const showDetailsContainer = document.getElementById(
+      "show-ditails-container"
+    );
+    showDetailsContainer.innerHTML = `
+      <img src ="${phone.image}" alt ="" />
+      <p><span>storage: </span>${phone?.mainFeatures?.storage}</p>
+    `;
+    show_details_modal.showModal();
+}
+
+loadPhone()
